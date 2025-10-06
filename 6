@@ -1,0 +1,66 @@
+-- Создание базы данных
+CREATE DATABASE BeautySalonDB;
+USE BeautySalonDB;
+
+-- Таблицы
+
+CREATE TABLE Clients (
+    ClientID INT IDENTITY(1,1) PRIMARY KEY,
+    FirstName NVARCHAR(50) NOT NULL,
+    LastName NVARCHAR(50) NOT NULL,
+    Phone NVARCHAR(20),
+    Email NVARCHAR(100)
+);
+
+CREATE TABLE Masters (
+    MasterID INT IDENTITY(1,1) PRIMARY KEY,
+    FirstName NVARCHAR(50) NOT NULL,
+    LastName NVARCHAR(50) NOT NULL,
+    Specialty NVARCHAR(100),
+    Phone NVARCHAR(20)
+);
+
+CREATE TABLE Services (
+    ServiceID INT IDENTITY(1,1) PRIMARY KEY,
+    ServiceName NVARCHAR(150) NOT NULL,
+    Description NVARCHAR(300),
+    Price DECIMAL(10,2)
+);
+
+CREATE TABLE Appointments (
+    AppointmentID INT IDENTITY(1,1) PRIMARY KEY,
+    ClientID INT FOREIGN KEY REFERENCES Clients(ClientID),
+    MasterID INT FOREIGN KEY REFERENCES Masters(MasterID),
+    ServiceID INT FOREIGN KEY REFERENCES Services(ServiceID),
+    AppointmentDate DATETIME,
+    Notes NVARCHAR(300)
+);
+
+CREATE TABLE Consumables (
+    ConsumableID INT IDENTITY(1,1) PRIMARY KEY,
+    ConsumableName NVARCHAR(150),
+    QuantityInStock INT,
+    Unit NVARCHAR(20)
+);
+
+-- Тестовые данные
+
+INSERT INTO Clients (FirstName, LastName, Phone, Email) VALUES
+('Анна', 'Иванова', '+79990001111', 'anna.ivanova@example.com'),
+('Екатерина', 'Петрова', '+79990002222', 'ekaterina.petrova@example.com');
+
+INSERT INTO Masters (FirstName, LastName, Specialty, Phone) VALUES
+('Ольга', 'Смирнова', 'Парикмахер', '+79990003333'),
+('Дмитрий', 'Козлов', 'Мастер маникюра', '+79990004444');
+
+INSERT INTO Services (ServiceName, Description, Price) VALUES
+('Стрижка', 'Мужская и женская стрижка', 1200.00),
+('Маникюр', 'Классический маникюр и покрытие', 1500.00);
+
+INSERT INTO Appointments (ClientID, MasterID, ServiceID, AppointmentDate, Notes) VALUES
+(1, 1, 1, '2025-10-10 14:00', 'Подстричься покороче'),
+(2, 2, 2, '2025-10-12 11:00', '');
+
+INSERT INTO Consumables (ConsumableName, QuantityInStock, Unit) VALUES
+('Краска для волос', 20, 'литров'),
+('Лак для ногтей', 100, 'бутылок');
