@@ -1,0 +1,81 @@
+-- Создание базы данных
+CREATE DATABASE ITCompanyDB;
+USE ITCompanyDB;
+
+-- Таблицы
+
+CREATE TABLE Clients (
+    ClientID INT IDENTITY(1,1) PRIMARY KEY,
+    ClientName NVARCHAR(150) NOT NULL,
+    ContactName NVARCHAR(100),
+    Email NVARCHAR(100),
+    Phone NVARCHAR(20)
+);
+
+CREATE TABLE Employees (
+    EmployeeID INT IDENTITY(1,1) PRIMARY KEY,
+    FirstName NVARCHAR(50) NOT NULL,
+    LastName NVARCHAR(50) NOT NULL,
+    Position NVARCHAR(100),
+    Email NVARCHAR(100),
+    Phone NVARCHAR(20)
+);
+
+CREATE TABLE Projects (
+    ProjectID INT IDENTITY(1,1) PRIMARY KEY,
+    ProjectName NVARCHAR(200) NOT NULL,
+    ClientID INT FOREIGN KEY REFERENCES Clients(ClientID),
+    StartDate DATE,
+    EndDate DATE,
+    Status NVARCHAR(50)
+);
+
+CREATE TABLE Technologies (
+    TechnologyID INT IDENTITY(1,1) PRIMARY KEY,
+    TechnologyName NVARCHAR(100) NOT NULL,
+    Description NVARCHAR(300)
+);
+
+CREATE TABLE Tasks (
+    TaskID INT IDENTITY(1,1) PRIMARY KEY,
+    ProjectID INT FOREIGN KEY REFERENCES Projects(ProjectID),
+    AssignedTo INT FOREIGN KEY REFERENCES Employees(EmployeeID),
+    TaskDescription NVARCHAR(500),
+    DueDate DATE,
+    Status NVARCHAR(50)
+);
+
+CREATE TABLE ProjectTechnologies (
+    ProjectID INT FOREIGN KEY REFERENCES Projects(ProjectID),
+    TechnologyID INT FOREIGN KEY REFERENCES Technologies(TechnologyID),
+    PRIMARY KEY (ProjectID, TechnologyID)
+);
+
+-- Тестовые данные
+
+INSERT INTO Clients (ClientName, ContactName, Email, Phone) VALUES
+('ООО Ромашка', 'Анна Сергеевна', 'anna.romashka@example.com', '+79990001111'),
+('ЗАО Вектор', 'Иван Петрович', 'ivan.vector@example.com', '+79990002222');
+
+INSERT INTO Employees (FirstName, LastName, Position, Email, Phone) VALUES
+('Алексей', 'Иванов', 'Разработчик', 'alex.ivanov@example.com', '+79990003333'),
+('Екатерина', 'Петрова', 'Тестировщик', 'ekaterina.petrova@example.com', '+79990004444');
+
+INSERT INTO Projects (ProjectName, ClientID, StartDate, EndDate, Status) VALUES
+('Веб-платформа для магазинов', 1, '2025-01-15', '2025-12-31', 'В процессе'),
+('Мобильное приложение для банка', 2, '2025-03-01', '2025-11-30', 'Планируется');
+
+INSERT INTO Technologies (TechnologyName, Description) VALUES
+('C#', 'Язык программирования от Microsoft'),
+('React', 'Javascript библиотека для UI'),
+('SQL Server', 'СУБД от Microsoft');
+
+INSERT INTO Tasks (ProjectID, AssignedTo, TaskDescription, DueDate, Status) VALUES
+(1, 1, 'Разработка backend API', '2025-06-30', 'Выполняется'),
+(1, 2, 'Модуль тестирования', '2025-07-15', 'Не начато'),
+(2, 1, 'Разработка интерфейса', '2025-10-01', 'Планируется');
+
+INSERT INTO ProjectTechnologies VALUES
+(1, 1),
+(1, 3),
+(2, 2);
