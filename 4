@@ -1,0 +1,73 @@
+-- Создание базы данных
+CREATE DATABASE MuseumDB;
+USE MuseumDB;
+
+-- Таблицы
+
+CREATE TABLE Exhibits (
+    ExhibitID INT IDENTITY(1,1) PRIMARY KEY,
+    ExhibitName NVARCHAR(200),
+    Description NVARCHAR(500),
+    YearAdded INT
+);
+
+CREATE TABLE Visitors (
+    VisitorID INT IDENTITY(1,1) PRIMARY KEY,
+    FirstName NVARCHAR(50),
+    LastName NVARCHAR(50),
+    Phone NVARCHAR(20),
+    Email NVARCHAR(100)
+);
+
+CREATE TABLE Exhibitions (
+    ExhibitionID INT IDENTITY(1,1) PRIMARY KEY,
+    ExhibitionName NVARCHAR(200),
+    StartDate DATE,
+    EndDate DATE
+);
+
+CREATE TABLE Tours (
+    TourID INT IDENTITY(1,1) PRIMARY KEY,
+    ExhibitionID INT FOREIGN KEY REFERENCES Exhibitions(ExhibitionID),
+    TourDate DATETIME,
+    GuideName NVARCHAR(100)
+);
+
+CREATE TABLE Halls (
+    HallID INT IDENTITY(1,1) PRIMARY KEY,
+    HallName NVARCHAR(100),
+    Location NVARCHAR(200)
+);
+
+-- Связи (экспонаты - залы)
+CREATE TABLE ExhibitHalls (
+    ExhibitID INT FOREIGN KEY REFERENCES Exhibits(ExhibitID),
+    HallID INT FOREIGN KEY REFERENCES Halls(HallID),
+    PRIMARY KEY (ExhibitID, HallID)
+);
+
+-- Тестовые данные
+
+INSERT INTO Exhibits (ExhibitName, Description, YearAdded) VALUES
+('Живопись эпохи Возрождения', 'Картины XV-XVI веков', 2010),
+('Древние египетские артефакты', 'Саркофаги, украшения, статуэтки', 2015);
+
+INSERT INTO Visitors (FirstName, LastName, Phone, Email) VALUES
+('Ольга', 'Смирнова', '+79990003333', 'olga.smirnova@example.com'),
+('Игорь', 'Ковалев', '+79990004444', 'igor.kovalev@example.com');
+
+INSERT INTO Exhibitions (ExhibitionName, StartDate, EndDate) VALUES
+('Искусство Возрождения', '2025-09-01', '2025-12-31'),
+('Древний мир', '2025-10-01', '2026-01-31');
+
+INSERT INTO Tours (ExhibitionID, TourDate, GuideName) VALUES
+(1, '2025-10-10 15:00', 'Елена Петрова'),
+(2, '2025-11-05 14:00', 'Сергей Иванов');
+
+INSERT INTO Halls (HallName, Location) VALUES
+('Главный зал', 'ул. Ленина, 5'),
+('Зал древностей', 'ул. Пушкина, 7');
+
+INSERT INTO ExhibitHalls VALUES
+(1, 1),
+(2, 2);
