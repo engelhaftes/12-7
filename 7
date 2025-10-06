@@ -1,0 +1,64 @@
+-- Создание базы данных
+CREATE DATABASE PrintingHouseDB;
+USE PrintingHouseDB;
+
+-- Таблицы
+
+CREATE TABLE Clients (
+    ClientID INT IDENTITY(1,1) PRIMARY KEY,
+    ClientName NVARCHAR(150),
+    ContactName NVARCHAR(100),
+    Phone NVARCHAR(20),
+    Email NVARCHAR(100)
+);
+
+CREATE TABLE Orders (
+    OrderID INT IDENTITY(1,1) PRIMARY KEY,
+    ClientID INT FOREIGN KEY REFERENCES Clients(ClientID),
+    OrderDate DATE,
+    Description NVARCHAR(500),
+    Status NVARCHAR(50)
+);
+
+CREATE TABLE PrintRuns (
+    PrintRunID INT IDENTITY(1,1) PRIMARY KEY,
+    OrderID INT FOREIGN KEY REFERENCES Orders(OrderID),
+    Quantity INT,
+    MaterialID INT FOREIGN KEY REFERENCES Materials(MaterialID)
+);
+
+CREATE TABLE Materials (
+    MaterialID INT IDENTITY(1,1) PRIMARY KEY,
+    MaterialName NVARCHAR(150),
+    QuantityInStock INT,
+    Unit NVARCHAR(20)
+);
+
+CREATE TABLE Equipment (
+    EquipmentID INT IDENTITY(1,1) PRIMARY KEY,
+    EquipmentName NVARCHAR(150),
+    Description NVARCHAR(300),
+    Status NVARCHAR(50)
+);
+
+-- Тестовые данные
+
+INSERT INTO Clients (ClientName, ContactName, Phone, Email) VALUES
+('ООО Рекламщик', 'Ирина Смирнова', '+79990001111', 'irina.smirnova@example.com'),
+('ИП Иванов', 'Иван Иванов', '+79990002222', 'ivan.ivanov@example.com');
+
+INSERT INTO Orders (ClientID, OrderDate, Description, Status) VALUES
+(1, '2025-09-20', 'Печать буклетов', 'В процессе'),
+(2, '2025-09-25', 'Печать визиток', 'Завершен');
+
+INSERT INTO Materials (MaterialName, QuantityInStock, Unit) VALUES
+('Бумага А4', 10000, 'листов'),
+('Краска для печати', 50, 'литров');
+
+INSERT INTO Equipment (EquipmentName, Description, Status) VALUES
+('Принтер Xerox', 'Цветной лазерный принтер', 'Работает'),
+('Резак для бумаги', 'Автоматический резак', 'В ремонте');
+
+INSERT INTO PrintRuns (OrderID, Quantity, MaterialID) VALUES
+(1, 5000, 1),
+(2, 2000, 1);
