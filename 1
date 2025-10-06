@@ -1,0 +1,67 @@
+-- Создание базы данных
+CREATE DATABASE MobileOperatorDB;
+USE MobileOperatorDB;
+
+-- Таблицы
+
+CREATE TABLE Subscribers (
+    SubscriberID INT IDENTITY(1,1) PRIMARY KEY,
+    FirstName NVARCHAR(50) NOT NULL,
+    LastName NVARCHAR(50) NOT NULL,
+    PhoneNumber NVARCHAR(20) UNIQUE NOT NULL,
+    Email NVARCHAR(100)
+);
+
+CREATE TABLE Tariffs (
+    TariffID INT IDENTITY(1,1) PRIMARY KEY,
+    TariffName NVARCHAR(100) NOT NULL,
+    Price DECIMAL(10,2),
+    MinutesIncluded INT,
+    SMSIncluded INT,
+    DataIncludedMB INT
+);
+
+CREATE TABLE Calls (
+    CallID INT IDENTITY(1,1) PRIMARY KEY,
+    SubscriberID INT FOREIGN KEY REFERENCES Subscribers(SubscriberID),
+    CallDate DATETIME,
+    DurationSec INT,
+    CalledNumber NVARCHAR(20)
+);
+
+CREATE TABLE SMSMessages (
+    SMSID INT IDENTITY(1,1) PRIMARY KEY,
+    SubscriberID INT FOREIGN KEY REFERENCES Subscribers(SubscriberID),
+    SMSDate DATETIME,
+    RecipientNumber NVARCHAR(20),
+    Message NVARCHAR(500)
+);
+
+CREATE TABLE InternetUsages (
+    UsageID INT IDENTITY(1,1) PRIMARY KEY,
+    SubscriberID INT FOREIGN KEY REFERENCES Subscribers(SubscriberID),
+    UsageDate DATETIME,
+    DataUsedMB DECIMAL(10,2)
+);
+
+-- Тестовые данные
+
+INSERT INTO Subscribers (FirstName, LastName, PhoneNumber, Email) VALUES
+('Ирина', 'Кузнецова', '+79990001111', 'irina.kuznetsova@example.com'),
+('Михаил', 'Васильев', '+79990002222', 'mihail.vasiliev@example.com');
+
+INSERT INTO Tariffs (TariffName, Price, MinutesIncluded, SMSIncluded, DataIncludedMB) VALUES
+('Базовый', 300.00, 300, 100, 5000),
+('Премиум', 700.00, 1000, 500, 20000);
+
+INSERT INTO Calls (SubscriberID, CallDate, DurationSec, CalledNumber) VALUES
+(1, '2025-10-05 12:00', 180, '+79990003333'),
+(2, '2025-10-05 13:00', 300, '+79990004444');
+
+INSERT INTO SMSMessages (SubscriberID, SMSDate, RecipientNumber, Message) VALUES
+(1, '2025-10-05 12:05', '+79990003333', 'Привет!'),
+(2, '2025-10-05 13:10', '+79990004444', 'Как дела?');
+
+INSERT INTO InternetUsages (SubscriberID, UsageDate, DataUsedMB) VALUES
+(1, '2025-10-05 12:15', 150.5),
+(2, '2025-10-05 13:30', 500.0);
