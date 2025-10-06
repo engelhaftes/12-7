@@ -1,0 +1,72 @@
+-- Создание базы данных
+CREATE DATABASE BowlingClubDB;
+USE BowlingClubDB;
+
+-- Таблицы
+
+CREATE TABLE Players (
+    PlayerID INT IDENTITY(1,1) PRIMARY KEY,
+    FirstName NVARCHAR(50),
+    LastName NVARCHAR(50),
+    Phone NVARCHAR(20),
+    Email NVARCHAR(100)
+);
+
+CREATE TABLE Lanes (
+    LaneID INT IDENTITY(1,1) PRIMARY KEY,
+    LaneNumber INT NOT NULL,
+    Description NVARCHAR(200)
+);
+
+CREATE TABLE Games (
+    GameID INT IDENTITY(1,1) PRIMARY KEY,
+    LaneID INT FOREIGN KEY REFERENCES Lanes(LaneID),
+    GameDate DATETIME
+);
+
+CREATE TABLE Tournaments (
+    TournamentID INT IDENTITY(1,1) PRIMARY KEY,
+    TournamentName NVARCHAR(200),
+    StartDate DATE,
+    EndDate DATE
+);
+
+CREATE TABLE Equipment (
+    EquipmentID INT IDENTITY(1,1) PRIMARY KEY,
+    EquipmentName NVARCHAR(150),
+    Description NVARCHAR(300)
+);
+
+-- Связи игроков и игр
+CREATE TABLE PlayerGames (
+    PlayerID INT FOREIGN KEY REFERENCES Players(PlayerID),
+    GameID INT FOREIGN KEY REFERENCES Games(GameID),
+    Score INT,
+    PRIMARY KEY (PlayerID, GameID)
+);
+
+-- Тестовые данные
+
+INSERT INTO Players (FirstName, LastName, Phone, Email) VALUES
+('Виктор', 'Смирнов', '+79990005555', 'viktor.smirnov@example.com'),
+('Наталья', 'Иванова', '+79990006666', 'nataliya.ivanova@example.com');
+
+INSERT INTO Lanes (LaneNumber, Description) VALUES
+(1, 'Основная дорожка'),
+(2, 'Резервная дорожка');
+
+INSERT INTO Games (LaneID, GameDate) VALUES
+(1, '2025-10-01 18:00'),
+(2, '2025-10-02 20:00');
+
+INSERT INTO Tournaments (TournamentName, StartDate, EndDate) VALUES
+('Осенний кубок', '2025-09-15', '2025-10-15'),
+('Зимний турнир', '2025-12-01', '2026-01-10');
+
+INSERT INTO Equipment (EquipmentName, Description) VALUES
+('Шар для боулинга', 'Вес 14 фунтов, красный kolor'),
+('Обувь для боулинга', 'Размеры 36-45');
+
+INSERT INTO PlayerGames VALUES
+(1, 1, 180),
+(2, 2, 190);
