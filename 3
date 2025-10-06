@@ -1,0 +1,66 @@
+-- Создание базы данных
+CREATE DATABASE CinemaDB;
+USE CinemaDB;
+
+-- Таблицы
+
+CREATE TABLE Movies (
+    MovieID INT IDENTITY(1,1) PRIMARY KEY,
+    Title NVARCHAR(200) NOT NULL,
+    Genre NVARCHAR(100),
+    DurationMin INT,
+    ReleaseYear INT
+);
+
+CREATE TABLE Viewers (
+    ViewerID INT IDENTITY(1,1) PRIMARY KEY,
+    FirstName NVARCHAR(50),
+    LastName NVARCHAR(50),
+    Email NVARCHAR(100),
+    Phone NVARCHAR(20)
+);
+
+CREATE TABLE Halls (
+    HallID INT IDENTITY(1,1) PRIMARY KEY,
+    HallName NVARCHAR(100),
+    SeatsCount INT
+);
+
+CREATE TABLE Sessions (
+    SessionID INT IDENTITY(1,1) PRIMARY KEY,
+    MovieID INT FOREIGN KEY REFERENCES Movies(MovieID),
+    HallID INT FOREIGN KEY REFERENCES Halls(HallID),
+    SessionDate DATETIME
+);
+
+CREATE TABLE Tickets (
+    TicketID INT IDENTITY(1,1) PRIMARY KEY,
+    SessionID INT FOREIGN KEY REFERENCES Sessions(SessionID),
+    ViewerID INT FOREIGN KEY REFERENCES Viewers(ViewerID),
+    SeatNumber NVARCHAR(10),
+    TicketPrice DECIMAL(10,2)
+);
+
+-- Тестовые данные
+
+INSERT INTO Movies (Title, Genre, DurationMin, ReleaseYear) VALUES
+('Интерстеллар', 'Фантастика', 169, 2014),
+('Титаник', 'Мелодрама', 195, 1997),
+('Начало', 'Триллер', 148, 2010);
+
+INSERT INTO Viewers (FirstName, LastName, Email, Phone) VALUES
+('Александр', 'Петров', 'alex.petrov@example.com', '+79990001111'),
+('Мария', 'Иванова', 'maria.ivanova@example.com', '+79990002222');
+
+INSERT INTO Halls (HallName, SeatsCount) VALUES
+('Зал 1', 100),
+('Зал 2', 80);
+
+INSERT INTO Sessions (MovieID, HallID, SessionDate) VALUES
+(1, 1, '2025-10-10 19:00'),
+(2, 2, '2025-10-11 20:00');
+
+INSERT INTO Tickets (SessionID, ViewerID, SeatNumber, TicketPrice) VALUES
+(1, 1, 'A10', 400.00),
+(1, 2, 'A11', 400.00),
+(2, 2, 'B5', 350.00);
